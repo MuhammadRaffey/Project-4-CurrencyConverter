@@ -21,8 +21,8 @@ This is a simple command-line currency converter project created by "Raffey." Th
 Alternatively, you can install the package globally and run it from anywhere in your terminal:
 
 ```bash
-npm i
-npx
+npm i raffeys-currency
+npx raffeys-currency
 ```
 
 3. Follow the on-screen prompts to enter the amount in PKR, choose the desired currency for conversion, and optionally exit the program.
