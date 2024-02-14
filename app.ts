@@ -36,12 +36,6 @@ async function promptUser() {
       message: "Which Currency would you like to convert your money to?",
       choices: ["USD", "CAD", "EUR", "GBP"],
     },
-    {
-      type: "confirm",
-      name: "exit",
-      message: "Do you want to exit?",
-      default: false,
-    },
   ];
 
   return await inquirer.prompt(questions);
@@ -49,28 +43,31 @@ async function promptUser() {
 
 async function main() {
   await displayBanner();
-  let exit = false;
 
-  do {
-    const { choice, amount, exit: shouldExit } = await promptUser();
+  let shouldExit = false;
 
-    if (shouldExit) {
-      console.log(chalk.yellow("Exiting..."));
-      exit = true;
+  while (!shouldExit) {
+    const { choice, amount } = await promptUser();
+
+    const conversionRate = currencyRates[choice];
+    if (conversionRate) {
+      const convertedAmount = parseFloat(amount) / conversionRate;
+      console.log(
+        chalk.blue(`Converted amount: ${convertedAmount.toFixed(2)} ${choice}`)
+      );
+
+      const { exit } = await inquirer.prompt({
+        type: "confirm",
+        name: "exit",
+        message: "Do you want to exit?",
+        default: false,
+      });
+
+      shouldExit = exit;
     } else {
-      const conversionRate = currencyRates[choice];
-      if (conversionRate) {
-        const convertedAmount = parseFloat(amount) / conversionRate;
-        console.log(
-          chalk.blue(
-            `Converted amount: ${convertedAmount.toFixed(2)} ${choice}`
-          )
-        );
-      } else {
-        console.log(chalk.red("Invalid currency choice!"));
-      }
+      console.log(chalk.red("Invalid currency choice!"));
     }
-  } while (!exit);
+  }
 }
 
 main();
